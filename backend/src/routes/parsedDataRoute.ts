@@ -60,13 +60,11 @@
 import express from "express";
 import { getDbConnection } from "../db/database";
 import { buildTree } from "../utils/buildTree";
+import { escapeLikeString } from "../utils/utils";
 
 const router = express.Router();
 
 // Helper function to escape SQLite special characters in LIKE queries
-function escapeLikeString(str: string): string {
-  return str.replace(/[%_]/g, "\\$&");
-}
 
 // GET "/"
 router.get("/", (req, res) => {
@@ -74,7 +72,7 @@ router.get("/", (req, res) => {
 
   db.serialize(() => {
     // Fetch all linear data where name does not include " > "
-    const sql = `SELECT name, size FROM parsed_data WHERE name NOT LIKE ? ESCAPE '\\'`;
+    const sql = `SELECT name, size, wnid FROM parsed_data WHERE name NOT LIKE ? ESCAPE '\\'`;
     const params = [`%${escapeLikeString(" > ")}%`];
 
     db.all(sql, params, (err, rows) => {
@@ -121,7 +119,7 @@ router.get("/children", (req, res) => {
     const exclusionPattern = `${escapedParentName} > % > %`;
 
     const sql = `
-      SELECT name, size FROM parsed_data
+      SELECT name, size, wnid FROM parsed_data
       WHERE name LIKE ? ESCAPE '\\' AND name NOT LIKE ? ESCAPE '\\'
     `;
     const params = [pattern, exclusionPattern];
@@ -137,10 +135,54 @@ router.get("/children", (req, res) => {
       const filteredChildren = rows.map((child) => ({
         name: child.name,
         size: child.size,
+        wnid: child.wnid,
       }));
 
       res.status(200).send({
         data: filteredChildren,
+      });
+
+      db.close();
+    });
+  });
+});
+
+router.get("/search", (req, res) => {
+  const query = req.query.q as string;
+
+  if (!query) {
+    return res.status(400).send({ error: 'Query parameter "q" is required' });
+  }
+
+  const db = getDbConnection();
+
+  db.serialize(() => {
+    // Escape special characters in the query string
+    const escapedQuery = escapeLikeString(query);
+
+    // Construct the pattern for the LIKE operator
+    const pattern = `%${escapedQuery}%`;
+
+    const sql = `
+      SELECT name, size, wnid FROM parsed_data
+      WHERE name LIKE ? ESCAPE '\\'
+    `;
+    const params = [pattern];
+
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        console.error("Error executing search query:", err);
+        db.close();
+        return res.status(500).send({ error: "Internal Server Error" });
+      }
+
+      if (!rows || rows.length === 0) {
+        db.close();
+        return res.status(404).send({ error: "No matching results found" });
+      }
+
+      res.status(200).send({
+        data: rows,
       });
 
       db.close();

@@ -1,11 +1,12 @@
 export interface TreeNode {
   name: string;
   size: number;
+  wnid: string;
   children: TreeNode[];
 }
 
 export function buildTree(
-  data: Array<{ name: string; size: number }>
+  data: Array<{ name: string; size: number; wnid: string }>
 ): TreeNode[] {
   const nodeMap: { [path: string]: TreeNode } = {};
 
@@ -21,6 +22,7 @@ export function buildTree(
         const node: TreeNode = {
           name: part,
           size: 0, // Will assign the size later if it's a leaf node
+          wnid: item.wnid,
           children: [],
         };
         nodeMap[path] = node;
