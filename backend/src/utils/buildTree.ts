@@ -28,7 +28,6 @@ export function buildTree(
         nodeMap[path] = node;
 
         if (parentNode) {
-          // Add to parent's children
           parentNode.children.push(node);
         }
       }
@@ -42,6 +41,5 @@ export function buildTree(
     });
   });
 
-  // Return the entire tree, all nodes, not just roots
   return Object.values(nodeMap);
 }

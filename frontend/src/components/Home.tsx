@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { TreeNodeComponent } from "./TreeNode"; // Adjust the import based on your file structure
 import { SearchNode } from "./SearchNode";
@@ -25,12 +25,11 @@ const TreeView = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <SearchNode />
-
+    <div style={{ display: "flex" }}>
       {data.map((node) => (
         <TreeNodeComponent key={node.name} node={node} />
       ))}
+      <SearchNode />
     </div>
   );
 };

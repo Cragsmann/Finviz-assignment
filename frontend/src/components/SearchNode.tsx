@@ -1,6 +1,6 @@
-// SearchComponent.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { debounce } from "lodash";
 import { TreeNodeComponent } from "./TreeNode";
 
 export const SearchNode = () => {
@@ -8,14 +8,10 @@ export const SearchNode = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e) => {
-    setQuery(e.target.value);
-  };
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-
-    if (!query.trim()) {
+  const debouncedSearch = debounce(async (searchTerm) => {
+    if (!searchTerm.trim()) {
+      setSearchResults([]);
+      setLoading(false);
       return;
     }
 
@@ -24,7 +20,7 @@ export const SearchNode = () => {
       const response = await axios.get(
         "http://localhost:3000/treeData/search",
         {
-          params: { q: query },
+          params: { searchTerm },
         }
       );
       setSearchResults(response.data.data);
@@ -34,11 +30,17 @@ export const SearchNode = () => {
     } finally {
       setLoading(false);
     }
+  }, 500);
+
+  const handleInputChange = (e) => {
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    debouncedSearch(newQuery);
   };
 
   return (
     <div>
-      <form onSubmit={handleSearch} style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
           value={query}
@@ -46,13 +48,7 @@ export const SearchNode = () => {
           placeholder="Search..."
           style={{ padding: "5px", width: "200px" }}
         />
-        <button
-          type="submit"
-          style={{ padding: "5px 10px", marginLeft: "5px" }}
-        >
-          Search
-        </button>
-      </form>
+      </div>
 
       {loading && <div>Loading search results...</div>}
 
@@ -65,7 +61,7 @@ export const SearchNode = () => {
         </div>
       )}
 
-      {!loading && searchResults.length === 0 && query && (
+      {!loading && searchResults.length === 0 && query.trim() && (
         <div>No results found for "{query}"</div>
       )}
     </div>

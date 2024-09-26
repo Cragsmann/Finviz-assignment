@@ -9,14 +9,14 @@ export type TParsedData = {
   gloss?: string;
 };
 
-export async function fetchAndParseImageNet(db: Database): Promise<void> {
+export async function initializeData(db: Database): Promise<void> {
   try {
     console.time("Parsing Time");
 
-    const linearData = await parseXMLData();
+    const parsedData = await fetchAndParseXMLData();
 
     console.timeEnd("Parsing Time");
-    console.log("Celkový počet uzlov:", linearData.length);
+    console.log("Node count:", parsedData.length);
 
     console.time("Saving Time");
 
@@ -30,33 +30,28 @@ export async function fetchAndParseImageNet(db: Database): Promise<void> {
           gloss TEXT
         );
       `);
-    // Začatie transakcie
     db.exec("BEGIN TRANSACTION");
 
-    // Príprava vkladacieho príkazu
     const insertStmt = db.prepare(
       "INSERT INTO parsed_data (name, size, wnid, gloss) VALUES (?, ?, ?, ?)"
     );
 
-    // Vkladanie dát
-    for (const item of linearData) {
+    for (const item of parsedData) {
       insertStmt.run(item.name, item.size, item.wnid, item.gloss);
     }
 
-    // Finalizácia príkazu
     insertStmt.finalize();
 
-    // Potvrdenie transakcie
     db.exec("COMMIT");
 
     console.timeEnd("Saving Time");
-    console.log("Dáta boli uložené do SQLite databázy");
+    console.log("Data saved to DB");
   } catch (error) {
-    console.error("Chyba pri získavaní alebo spracovaní dát:", error);
+    console.error("Error initializing data:", error);
   }
 }
 
-async function parseXMLData(): Promise<TParsedData[]> {
+async function fetchAndParseXMLData(): Promise<TParsedData[]> {
   const url =
     "https://raw.githubusercontent.com/tzutalin/ImageNet_Utils/master/detection_eval_tools/structure_released.xml";
 
