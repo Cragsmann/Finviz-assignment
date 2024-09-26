@@ -1,10 +1,9 @@
 import express, { Express } from "express";
 import cors from "cors";
 import { PORT } from "./config/config";
-import treeData from "./routes/treeDataRoute";
-import { connectDB } from "./db/database";
-import { initDataFetch } from "./services/dataInitializer";
-import { LinearData } from "./models/linearDataModel";
+import treedDataRouter from "./routes/parsedDataRoute";
+import { getDbConnection } from "./db/database";
+import { fetchAndParseImageNet } from "./services/dataInit";
 
 const app: Express = express();
 
@@ -14,12 +13,14 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.get("/", (_, res) => {
   res.status(200).send("Welcome to the API!");
 });
-app.use("/treeData", treeData);
+app.use("/treeData", treedDataRouter);
 
 const startServer = async () => {
   try {
-    await connectDB();
-    console.log("MongoDB connected");
+    // await connectDB();
+    const db = getDbConnection();
+    console.log("DB connected");
+    await fetchAndParseImageNet(db);
 
     // await initDataFetch();
 
