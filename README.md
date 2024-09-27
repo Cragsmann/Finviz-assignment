@@ -1,4 +1,4 @@
-## Image Tree Application
+# Image Tree Application
 
 A full-stack application that allows users to search and navigate through an image tree structure. The backend is built with Express and TypeScript, utilizing a SQLite database, while the frontend is developed with React and TypeScript.
 
@@ -15,42 +15,40 @@ Setup Instructions
 1. Clone the Repository
    First, clone the repository and navigate to the project directory.
 
-# git clone https://github.com/Cragsmann/Finviz-assignment.git
+## git clone https://github.com/Cragsmann/Finviz-assignment.git
 
-# cd your-repo-name
+## cd your-repo-name
 
 2. Backend Setup
    Navigate to the backend directory.
 
-# cd backend
+## cd backend
 
 Install all necessary dependencies.
 
-# npm i
-
-# yarn
+## npm i
 
 Initialize the database (this will create the necessary tables and seed initial data into the SQLite database).
 
-# npm run db-init
+## npm run db-init
 
 Start the backend server.
 
-# npm run dev
+## npm run dev
 
 3. Frontend Setup
    Navigate to the frontend directory.
 
-# cd ..
+## cd ..
 
-# cd frontend
+## cd frontend
 
 Install all necessary dependencies.
 
-# npm i
+## npm i
 
 Start the frontend server.
 
-# npm run dev
+## npm run dev
 
 The frontend application will typically be accessible at http://localhost:5173.
