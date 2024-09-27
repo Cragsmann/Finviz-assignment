@@ -1,4 +1,3 @@
-// useSearchData.ts
 import { useState, useCallback, useMemo, useEffect } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
