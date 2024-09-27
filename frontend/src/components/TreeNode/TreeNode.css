@@ -1,0 +1,42 @@
+
+.tree-node {
+    margin-left: 20px;
+    width: fit-content;
+  }
+  
+  .node-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .node-label.file{
+    cursor:default;
+  }
+  
+  .node-label svg {
+    margin-right: 8px;
+  }
+  
+  .node-label span {
+    font-size: 16px;
+  }
+  
+  .node-label.folder:hover,
+  .node-label.file:hover {
+    background-color: #e6f7ff;
+  }
+  
+  .children {
+    margin-left: 20px;
+  }
+  
+  .loading {
+    margin-left: 28px;
+    font-size: 14px;
+    color: #999;
+  }
+  
+  .tree-icon{
+    color: #001529
+  }
