@@ -4,49 +4,56 @@ A full-stack application that allows users to search and navigate through an ima
 
 # Prerequisites
 
-Ensure you have the following installed on your local machine:
+## Ensure you have the following installed on your local machine:
 
-Node.js (v14 or later)
-npm (comes with Node.js)
-Git
-SQLite3 (optional, for database inspection)
-Setup Instructions
+### Node.js (v14 or later)
 
-1. Clone the Repository
-   First, clone the repository and navigate to the project directory.
+### npm (comes with Node.js)
 
-## git clone https://github.com/Cragsmann/Finviz-assignment.git
+### Git
 
-## cd your-repo-name
+### SQLite3 (optional, for database inspection)
 
-2. Backend Setup
-   Navigate to the backend directory.
+# Setup Instructions
 
-## cd backend
+## Clone the Repository
 
-Install all necessary dependencies.
+First, clone the repository and navigate to the project directory.
 
-## npm i
+git clone https://github.com/Cragsmann/Finviz-assignment.git
 
-Initialize the database (this will create the necessary tables and seed initial data into the SQLite database).
+cd your-repo-name
 
-## npm run db-init
+## Backend Setup
 
-Start the backend server.
+Navigate to the backend directory.
 
-## npm run dev
+cd backend
 
-3. Frontend Setup
-   Navigate to the frontend directory.
+## Install all necessary dependencies.
 
-## cd frontend
+npm i
 
-Install all necessary dependencies.
+## Initialize the database (this will create the necessary tables and seed initial data into the SQLite database).
 
-## npm i
+npm run db-init
 
-Start the frontend server.
+## Start the backend server.
 
-## npm run dev
+npm run dev
+
+## Frontend Setup
+
+Navigate to the frontend directory.
+
+cd frontend
+
+## Install all necessary dependencies.
+
+npm i
+
+## Start the frontend server.
+
+npm run dev
 
 The frontend application will typically be accessible at http://localhost:5173.
