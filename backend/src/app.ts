@@ -1,11 +1,12 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import treedDataRouter from "./routes/imageTreeRoute";
+import { CORS_ORIGIN } from "./config/config";
 
 const app: Express = express();
 
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: CORS_ORIGIN }));
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).send("Image tree server is running");

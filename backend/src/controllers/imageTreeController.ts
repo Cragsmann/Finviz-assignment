@@ -3,8 +3,8 @@ import {
   fetchMainNodes,
   fetchChildren,
   searchNodes,
-  TTreeImageData,
 } from "../models/imageTreeModel";
+import { TTreeImageData } from "../@types/types";
 
 export const getMainNodes = async (_req: Request, res: Response) => {
   try {

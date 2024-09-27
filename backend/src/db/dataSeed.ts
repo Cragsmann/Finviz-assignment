@@ -1,15 +1,10 @@
 import { Database } from "sqlite3";
 import axios from "axios";
 import sax from "sax";
+import { getDbConnection } from "./database";
+import { TTreeImageData } from "../@types/types";
 
-export type TParsedData = {
-  name: string;
-  size: number;
-  wnid?: string;
-  gloss?: string;
-};
-
-export async function fetchAndParseXMLData(): Promise<TParsedData[]> {
+export async function fetchAndParseXMLData(): Promise<TTreeImageData[]> {
   const url =
     "https://raw.githubusercontent.com/tzutalin/ImageNet_Utils/master/detection_eval_tools/structure_released.xml";
 
@@ -18,8 +13,8 @@ export async function fetchAndParseXMLData(): Promise<TParsedData[]> {
   return new Promise((resolve, reject) => {
     const parser = sax.createStream(true, {});
 
-    const stack: (TParsedData & { childCount?: number })[] = [];
-    const result: TParsedData[] = [];
+    const stack: (TTreeImageData & { childCount?: number })[] = [];
+    const result: TTreeImageData[] = [];
 
     parser.on("opentag", (node) => {
       if (node.name === "synset") {
@@ -30,7 +25,7 @@ export async function fetchAndParseXMLData(): Promise<TParsedData[]> {
         const parent = stack.length > 0 ? stack[stack.length - 1] : null;
         const fullName = parent ? `${parent.name} > ${words}` : words;
 
-        const currentNode: TParsedData & { childCount?: number } = {
+        const currentNode: TTreeImageData & { childCount?: number } = {
           name: fullName as string,
           wnid: wnid as string,
           gloss: glossAttr as string,
@@ -115,3 +110,6 @@ export async function initializeData(db: Database): Promise<void> {
     console.error("Error initializing data:", error);
   }
 }
+
+const db = getDbConnection();
+initializeData(db);

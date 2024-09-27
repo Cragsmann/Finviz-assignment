@@ -1,8 +1,4 @@
-import { TTreeImageData } from "../models/imageTreeModel";
-
-type TreeNode = TTreeImageData & {
-  children: TreeNode[];
-};
+import { TreeNode } from "../@types/types";
 
 export function buildTree(
   data: Array<{ name: string; size: number; wnid: string }>

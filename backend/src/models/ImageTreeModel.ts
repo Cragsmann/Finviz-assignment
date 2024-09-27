@@ -1,12 +1,7 @@
 import { Database } from "sqlite3";
 import { getDbConnection } from "../db/database";
 import { escapeLikeString } from "../utils/utils";
-
-export type TTreeImageData = {
-  name: string;
-  size: number;
-  wnid: string;
-};
+import { TTreeImageData } from "../@types/types";
 
 export const fetchMainNodes = (): Promise<TTreeImageData[]> => {
   return new Promise((resolve, reject) => {
