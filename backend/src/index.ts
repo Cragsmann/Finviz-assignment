@@ -1,19 +1,7 @@
-import express, { Express } from "express";
-import cors from "cors";
+import app from "./app";
 import { PORT } from "./config/config";
-import treedDataRouter from "./routes/imageTreeRoute";
 import { getDbConnection } from "./db/database";
-import { initializeData } from "./services/dataInit";
-
-const app: Express = express();
-
-app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
-
-app.get("/", (_, res) => {
-  res.status(200).send("Image tree server is running");
-});
-app.use("/treeData", treedDataRouter);
+import { initializeData } from "./db/dataSeed";
 
 const startServer = async () => {
   try {

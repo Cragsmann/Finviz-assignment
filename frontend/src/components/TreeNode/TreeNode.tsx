@@ -1,5 +1,5 @@
 import { FaFile, FaFolder, FaFolderOpen } from "react-icons/fa";
-import { useFetchTreeChildren } from "../../hooks/useFetchTreeChildren";
+import { useFetchTreeChildren } from "./hooks/useFetchTreeChildren";
 import "./TreeNode.css";
 import { TTreeData } from "../../@types/treeData";
 
@@ -26,7 +26,9 @@ export const TreeNode = ({ node }: { node: TTreeData }) => {
         ) : (
           <FaFile className="tree-icon" />
         )}
-        <span>{displayName}</span>
+        <span>
+          {displayName} {node.size > 0 && `(${node.size})`}
+        </span>
       </div>
       {loading && <div className="loading">Loading...</div>}
       {isOpen && treeChildren.length > 0 && (

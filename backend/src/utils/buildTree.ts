@@ -1,9 +1,8 @@
-export interface TreeNode {
-  name: string;
-  size: number;
-  wnid: string;
+import { TTreeImageData } from "../models/imageTreeModel";
+
+type TreeNode = TTreeImageData & {
   children: TreeNode[];
-}
+};
 
 export function buildTree(
   data: Array<{ name: string; size: number; wnid: string }>
@@ -21,7 +20,7 @@ export function buildTree(
       if (!nodeMap[path]) {
         const node: TreeNode = {
           name: part,
-          size: 0, // Will assign the size later if it's a leaf node
+          size: 0,
           wnid: item.wnid,
           children: [],
         };
@@ -35,7 +34,6 @@ export function buildTree(
       parentNode = nodeMap[path];
 
       if (index === parts.length - 1) {
-        // Leaf node, assign the actual size
         parentNode.size = item.size;
       }
     });

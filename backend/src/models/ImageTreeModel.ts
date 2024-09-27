@@ -1,26 +1,90 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { Database } from "sqlite3";
+import { getDbConnection } from "../db/database";
+import { escapeLikeString } from "../utils/utils";
 
-export interface IImageTree extends Document {
+export type TTreeImageData = {
   name: string;
   size: number;
-  wnid?: string;
-  gloss?: string;
-}
+  wnid: string;
+};
 
-const ImageTreeSchema: Schema = new Schema(
-  {
-    name: { type: String, required: true },
-    size: { type: Number, required: true },
-    wnid: { type: String },
-    gloss: { type: String },
-  },
-  { versionKey: false, collection: "imageTree" }
-);
+export const fetchMainNodes = (): Promise<TTreeImageData[]> => {
+  return new Promise((resolve, reject) => {
+    const db: Database = getDbConnection();
 
-ImageTreeSchema.index({ wnid: 1 });
-ImageTreeSchema.index({ name: 1 });
+    const sql = `
+      SELECT name, size, wnid FROM parsed_data
+      WHERE name NOT LIKE ? ESCAPE '\\'
+      ORDER BY name COLLATE NOCASE
+    `;
+    const params = [`%${escapeLikeString(" > ")}%`];
 
-export const ImageTreeModel = mongoose.model<IImageTree>(
-  "ImageTree",
-  ImageTreeSchema
-);
+    db.all<TTreeImageData>(sql, params, (err, rows) => {
+      db.close();
+
+      if (err) {
+        console.error("Error fetching main nodes:", err);
+        return reject(err);
+      }
+
+      resolve(rows || []);
+    });
+  });
+};
+
+export const fetchChildren = (
+  parentName: string
+): Promise<TTreeImageData[]> => {
+  return new Promise((resolve, reject) => {
+    const db: Database = getDbConnection();
+
+    const escapedParentName = escapeLikeString(parentName);
+    const pattern = `${escapedParentName} > %`;
+    const exclusionPattern = `${escapedParentName} > % > %`;
+
+    const sql = `
+      SELECT name, size, wnid FROM parsed_data
+      WHERE name LIKE ? ESCAPE '\\' AND name NOT LIKE ? ESCAPE '\\'
+      ORDER BY name COLLATE NOCASE
+    `;
+    const params = [pattern, exclusionPattern];
+
+    db.all<TTreeImageData>(sql, params, (err, rows) => {
+      db.close();
+
+      if (err) {
+        console.error("Error fetching children:", err);
+        return reject(err);
+      }
+
+      resolve(rows || []);
+    });
+  });
+};
+
+export const searchNodes = (query: string): Promise<TTreeImageData[]> => {
+  return new Promise((resolve, reject) => {
+    const db: Database = getDbConnection();
+
+    const escapedQuery = escapeLikeString(query);
+    const pattern = `%${escapedQuery}%`;
+
+    const sql = `
+      SELECT name, size, wnid FROM parsed_data
+      WHERE name LIKE ? ESCAPE '\\'
+      ORDER BY name COLLATE NOCASE
+    `;
+    const params = [pattern];
+
+    db.all<TTreeImageData>(sql, params, (err, rows) => {
+      db.close();
+
+      if (err) {
+        console.error("Error executing search query:", err);
+        return reject(err);
+      }
+
+      resolve(rows || []);
+    });
+  });
+};

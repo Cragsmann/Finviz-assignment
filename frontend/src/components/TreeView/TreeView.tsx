@@ -1,4 +1,4 @@
-import { useFetchInitData } from "../../hooks/useFetchInitData";
+import { useFetchInitData } from "./hooks/useFetchInitData";
 import { SearchInput } from "../SearchInput/SearchInput";
 import { TreeNode } from "../TreeNode/TreeNode";
 import "./TreeView.css";
