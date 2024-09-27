@@ -39,8 +39,6 @@ Start the backend server.
 3. Frontend Setup
    Navigate to the frontend directory.
 
-## cd ..
-
 ## cd frontend
 
 Install all necessary dependencies.
